@@ -1,0 +1,72 @@
+Задание 1.
+************************
+Условие:
+Написать функцию на Python, которой передаются в качестве параметров команда и текст. Функция должна возвращать True, если команда успешно выполнена и текст найден в её выводе и False в противном случае. Передаваться должна только одна строка, разбиение вывода использовать не нужно.
+
+
+import subprocess
+def check_command_output(command, text):
+    try:
+        output = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
+        if text in output:
+            return True
+        else:
+            return False
+    except subprocess.CalledProcessError:
+        return False
+
+# Пример использования функции
+
+result = check_command_output("ls -l", "file.txt")
+print(result)
+
+
+
+Функция check_command_output принимает два аргумента: command, который представляет собой команду, которую нужно выполнить, и text, который представляет собой текст, наличие которого нужно проверить в выводе команды.
+
+Функция использует subprocess.check_output для выполнения команды. Если команда выполняется успешно, и переданный текст присутствует в выводе, функция вернет True. В противном случае, функция вернет False.
+
+
+Задание 2.
+************************
+Написать функцию на Python, которой передаются в качестве параметров команда и текст. Функция должна возвращать True, если команда успешно выполнена и текст найден в её выводе и False в противном случае. Передаваться должна только одна строка, в которой вывод разбивается на слова с удалением всех знаков пунктуации (их можно взять из списка string.punctuation модуля string). В этом режиме должно проверяться наличие слова в выводе.
+
+Создадим функцию которая будет принимать два параметра: команду и текст. Затем мы разобьем текст на слова, удалим из них все знаки пунктуации, и будем искать указанный текст среди этих слов.
+
+import string
+import subprocess
+
+def check_command_output(command, text):
+
+    # Выполняем команду и получаем stdout
+
+    result = subprocess.run(command, shell=True, capture_output=True, text=True)
+    output = result.stdout
+
+    # Удаляем знаки пунктуации из текста
+
+    translate_table = str.maketrans('', '', string.punctuation)
+    words = output.split()
+    clean_words = [word.translate(translate_table) for word in words]
+
+    # Проверяем наличие слова в выводе
+
+    if text in clean_words:
+        return True
+    else:
+        return False
+
+# Пример использования
+
+command = 'echo "Living in the world, is so so hard!"'
+
+text = 'hard'
+
+print(check_command_output(command, text)) # Выведет True
+
+В коде использовался модуль subprocess для выполнения команды и получения её вывода.
+Затем создана переводящая таблица, которая удаляет все знаки пунктуации из слов.
+Разбивается вывод на слова, очистка от пунктуации, проверка искомого текста.
+True, если текст найден, False если нет.
+
+
